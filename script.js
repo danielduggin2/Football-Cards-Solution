@@ -176,13 +176,13 @@ const myFavoriteFootballTeam = {
     ],
 };
 
-Object.freeze(myFavoriteFootballTeam);
 
 // accessing different keys
 // const sport = myFavoriteFootballTeam.sport;
 // const team = myFavoriteFootballTeam.team;
-const {sport, team, year, players} = myFavoriteFootballTeam; //destructuring syntax
-const {coachName} = myFavoriteFootballTeam.headCoach;
+Object.freeze(myFavoriteFootballTeam);
+const { sport, team, year, players } = myFavoriteFootballTeam;
+const { coachName } = myFavoriteFootballTeam.headCoach;
 
 typeOfSport.textContent = sport;
 teamName.textContent = team;
@@ -191,5 +191,50 @@ headCoach.textContent = coachName;
 
 // building out the function that will show player cards based on the selections made by the user in Filter Teammates
 const setPlayerCards = (arr = players) => {
-    playerCards.innerHTML += arr.map(() =>{}); //adding the player card information to the page
-}
+  playerCards.innerHTML += arr
+    .map(
+      ({ name, position, number, isCaptain, nickname }) =>
+        `
+        <div class="player-card">
+          <h2>${name} ${isCaptain ? "(Captain)" : ""}</h2>
+          <p>Position: ${position}</p>
+          <p>Number: ${number}</p>
+          <p>Nickname: ${nickname !== null ? nickname : "N/A"}</p>
+        </div>
+      `
+      //if isCaptain is true, return "(Captain) else, return an empty string"
+    )
+    .join("");//.join("") removes the commas between each player-card so it does not show up on screen
+};
+// e represents an object which contains the information for that event.
+playersDropdownList.addEventListener("change", (e) => {
+  playerCards.innerHTML = "";
+
+  switch (e.target.value) {
+    case "nickname":
+      setPlayerCards(players.filter((player) => player.nickname !== null));
+      break;
+    case "forward":
+      setPlayerCards(players.filter((player) => player.position === "forward"));
+      break;
+    case "midfielder":
+      setPlayerCards(
+        players.filter((player) => player.position === "midfielder")
+      );
+      break;
+    case "defender":
+      setPlayerCards(
+        players.filter((player) => player.position === "defender")
+      );
+      break;
+    case "goalkeeper":
+      setPlayerCards(
+        players.filter((player) => player.position === "goalkeeper")
+      );
+      break;
+
+    default:
+        setPlayerCards();
+  }
+});
+ //detect when a user makes a selection from the playersDropdownList
